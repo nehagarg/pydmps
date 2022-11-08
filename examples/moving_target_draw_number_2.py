@@ -39,6 +39,7 @@ plt.plot(y_track[:, 0], y_track[:, 1], "b--", lw=2, alpha=0.5)
 y_track = []
 dmp.reset_state()
 for t in range(dmp.timesteps):
+    print(dmp.goal)
     y, _, _ = dmp.step()
     y_track.append(np.copy(y))
     # move the target slightly every time step

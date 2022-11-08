@@ -29,15 +29,16 @@ R_halfpi = np.array(
     ]
 )
 num_obstacles = 5
+np.random.seed(200)
 obstacles = np.random.random((num_obstacles, 2)) * 2 - 1
 
 
 def avoid_obstacles(y, dy, goal):
     p = np.zeros(2)
 
+    dphi_tot = 0
     for obstacle in obstacles:
         # based on (Hoffmann, 2009)
-
         # if we're moving
         if np.linalg.norm(dy) > 1e-5:
 
@@ -56,14 +57,19 @@ def avoid_obstacles(y, dy, goal):
             dphi = gamma * phi * np.exp(-beta * abs(phi))
             R = np.dot(R_halfpi, np.outer(obstacle - y, dy))
             pval = -np.nan_to_num(np.dot(R, dy) * dphi)
+            #pval = -np.nan_to_num(np.dot(R, dy))
 
             # check to see if the distance to the obstacle is further than
             # the distance to the target, if it is, ignore the obstacle
             if np.linalg.norm(obj_vec) > np.linalg.norm(goal - y):
                 pval = 0
-
+                dphi = 0
+            #print(dphi)
+            #print(R)
+            #print(pval)
             p += pval
-    return p
+            dphi_tot += dphi
+    return p,dphi_tot
 
 
 # test normal run
@@ -75,9 +81,12 @@ goals = [[np.cos(theta), np.sin(theta)] for theta in np.linspace(0, 2 * np.pi, 2
 for goal in goals:
     dmp.goal = goal
     dmp.reset_state()
+    #external_force_init=avoid_obstacles(dmp.y, dmp.dy, goal)
     for t in range(dmp.timesteps):
+        p, dphi_tot = avoid_obstacles(dmp.y, dmp.dy, goal)
+        print(str(t) + ". " + str(dphi_tot))
         y_track[t], dy_track[t], ddy_track[t] = dmp.step(
-            external_force=avoid_obstacles(dmp.y, dmp.dy, goal)
+            external_force=p
         )
 
     plt.figure(1, figsize=(6, 6))
@@ -85,6 +94,7 @@ for goal in goals:
     for obstacle in obstacles:
         (plot_obs,) = plt.plot(obstacle[0], obstacle[1], "rx", mew=3)
     (plot_path,) = plt.plot(y_track[:, 0], y_track[:, 1], "b", lw=2)
+    (plot_path2,) = plt.plot([0,goal[0]], [0,goal[1]], "b--", lw=2)
     plt.title("DMP system - obstacle avoidance")
 
 plt.axis("equal")

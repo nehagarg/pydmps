@@ -102,6 +102,7 @@ if __name__ == "__main__":
     cs = CanonicalSystem(dt=0.001, pattern="discrete")
     # test normal rollout
     x_track1 = cs.rollout()
+    print(x_track1)
 
     cs.reset_state()
     # test error coupling
