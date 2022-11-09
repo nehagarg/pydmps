@@ -180,18 +180,24 @@ def get_dmp():
     dmp = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
     print("Inside Python")
     print(dmp.c)
+    print(dmp)
     #dmp.imitate_path(y_des=y_des)
     return dmp
-
+def dmp_print(dmp):
+    print("Inside Print DMP")
+    print(dmp)
+    return dmp
 def imitate_path(dmp, y_des_pylist):
     y_des_np = (np.array(y_des_pylist)).T
     print(y_des_np)
+    print(dmp)
     dmp.imitate_path(y_des=y_des_np)
+    print("Imitated path")
     print(dmp.c.shape)
     print(dmp.h.shape)
     print(dmp.w.shape)
-    print(dmp.w[0])
-    print(dmp.w[1])
+    #print(dmp.w[0])
+    #print(dmp.w[1])
     return dmp
 def dmp_rollout(dmp):
     print("Inside python dmp_rollout function")
