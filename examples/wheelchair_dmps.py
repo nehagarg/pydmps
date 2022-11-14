@@ -175,9 +175,9 @@ def imitate_trajectory(y_des, trajectory_id, lidar_points_np):
 
 
 
-def get_dmp():
+def get_dmp(dt_ = 0.01):
     # test normal run
-    dmp = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
+    dmp = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, dt = dt_, ay=np.ones(2) * 10.0)
     print("Inside Python")
     print(dmp.c)
     print(dmp)
